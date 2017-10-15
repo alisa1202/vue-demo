@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+<title>Title</title>
+<link rel="stylesheet" type="text/css" href="reset.css">
+<link rel="stylesheet" type="text/css" href="vueStyle.css">
+<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+</head>
+<body>
+<div id="tab">
+
+    <div class="login">
+                <img src="img/zu.jpg" height="195" width="260"  alt="" class="login-mid">
+                <div class="login-code clearfix">
+                    <input id="amount" class="first-login login-mid " style="IME-MODE: disabled; WIDTH:  60px; HEIGHT: 15px" onkeyup="this.value=this.value.replace(/\D/g,'')"  onafterpaste="    this.value=this.value.replace(/\D/g,'')" maxlength="11" size="14" name="amount" type= "text" placeholder="请输入您的手机号码" v-focus />
+                    <span class="code">验证码</span>
+                </div>
+                <input id="amount" class="first-login login-mid" style="IME-MODE: disabled; WIDTH:  60px; HEIGHT: 15px" onkeyup="this.value=this.value.replace(/\D/g,'')"  onafterpaste="    this.value=this.value.replace(/\D/g,'')" maxlength="6" size="14" name="amount" type= "text" placeholder="请输入验证码" />
+                
+                <a href="vueDemo.html" class="login-mid login-btn">登录</a>
+    </div>
+          
+
+</div>
+</body>
+<script src="vue.min.js"></script>
+
+<script>
+
+// 自定义组件 focus
+Vue.directive('focus', {
+  inserted: function (el) {
+    el.focus()
+  }
+})
+
+new Vue({
+    el: '#tab',
+    data: {
+        // sencond
+        addText:'',
+        prolist:[
+            {name:"HTML5",status:false},
+            {name:"CSS3",status:false},
+            {name:"vue",status:false},
+            {name:"react",status:false}
+        ],
+        newList:[],
+        curIndex:'',
+        beforeEditText:"",
+        curType:0,
+           
+        // sencond
+       
+
+        // third
+        layout: 'grid',
+        articles:[
+            {
+            "title": "美滋元猫粮美味三文鱼味幼猫猫粮2.5kg幼猫粮5斤大包装23省包邮",
+            "url": "http://tutorialzine.com/2016/03/what-you-need-to-know-about-css-variables/",
+            "image": {
+                "large": "img/large1.gif",
+                "small": "img/small1.png"
+            }
+        },
+        {
+            "title": "猫砂盆大号半封闭式猫厕所 膨润土猫沙盆猫屎盆猫咪用品送猫砂铲",
+            "url": "http://tutorialzine.com/2016/02/freebie-4-great-looking-pricing-tables/",
+            "image": {
+                "large": "img/large2.gif",
+                "small": "img/small1.png"
+            }
+        },
+        {
+            "title": "波奇网怡亲膨润土猫砂柠檬香型结团猫砂4kg聚团除臭猫砂24省包邮",
+            "url": "http://tutorialzine.com/2016/02/20-interesting-javascript-and-css-libraries-for-february-2016/",
+            "image": {
+                "large": "img/large3.gif",
+                "small": "img/small1.png"
+            }
+        },
+        {
+            "title": "买1送1猫粮成猫粮幼猫粮优趣猫粮成猫猫粮1.5kg赠后共6斤26省包邮",
+            "url": "http://tutorialzine.com/2016/02/quick-tip-easiest-way-to-make-responsive-headers/",
+            "image": {
+                "large": "img/large4.gif",
+                "small":"img/small1.png"
+            }
+        },
+        {
+            "title": "皇家猫粮幼猫奶糕BK34幼猫粮400gx2包1-4月龄离乳期新生小猫奶猫",
+            "url": "http://tutorialzine.com/2016/01/learn-sql-in-20-minutes/",
+            "image": {
+                "large": "img/large5.gif",
+                "small": "img/small1.png"
+            }
+        },
+        {
+            "title": "猫砂盆全封闭式特大号猫厕所松木双层猫沙盆猫屎盆子猫咪用品包邮",
+            "url": "http://tutorialzine.com/2015/12/creating-your-first-desktop-app-with-html-js-and-electron/",
+            "image": {
+                "large":"img/large6.gif",
+                "small": "img/small1.png"
+            }
+        }
+
+
+
+
+        ],
+        // third end
+        productList: [
+            {
+                'pro_name': '秋季时尚套装2017新款',
+                'pro_color': '白色',//品牌名称
+                'pro_size': 's',//品牌名称
+                'pro_num': 3,//数量
+                'pro_img': '../../images/ucenter/testimg.jpg',//图片链接
+                'pro_price': 800//单价
+            },
+            {
+                'pro_name': '秋季时尚套装2017新款',
+                'pro_color': '白色',//品牌名称
+                'pro_size': 's',//品牌名称
+                'pro_num': 3,//数量
+                'pro_img': '../../images/ucenter/testimg.jpg',//图片链接
+                'pro_price': 800//单价
+            },
+            {
+                'pro_name': '秋季时尚套装2017新款',
+                'pro_color': '白色',//品牌名称
+                'pro_size': 's',//品牌名称
+                'pro_num': 3,//数量
+                'pro_img': '../../images/ucenter/testimg.jpg',//图片链接
+                'pro_price': 800//单价
+            },
+            {
+                'pro_name': '秋季时尚套装2017新款',
+                'pro_color': '白色',//品牌名称
+                'pro_size': 's',//品牌名称
+                'pro_num': 3,//数量
+                'pro_img': '../../images/ucenter/testimg.jpg',//图片链接
+                'pro_price': 800//单价
+            },
+            {
+                'pro_name': '秋季时尚套装2017新款',
+                'pro_color': '白色',//品牌名称
+                'pro_size': 's',//品牌名称
+                'pro_num': 3,//数量
+                'pro_img': '../../images/ucenter/testimg.jpg',//图片链接
+                'pro_price': 800//单价
+            },
+            {
+                'pro_name': '秋季时尚套装2017新款',
+                'pro_color': '白色',//品牌名称
+                'pro_size': 's',//品牌名称
+                'pro_num': 3,//数量
+                'pro_img': '../../images/ucenter/testimg.jpg',//图片链接
+                'pro_price': 800//单价
+            },
+            {
+                'pro_name': '秋季时尚套装2017新款',
+                'pro_color': '白色',//品牌名称
+                'pro_size': 's',//品牌名称
+                'pro_num': 3,//数量
+                'pro_img': '../../images/ucenter/testimg.jpg',//图片链接
+                'pro_price': 800//单价
+            },
+            {
+                'pro_name': '秋季时尚套装2017新款',
+                'pro_color': '白色',//品牌名称
+                'pro_size': 's',//品牌名称
+                'pro_num': 3,//数量
+                'pro_img': '../../images/ucenter/testimg.jpg',//图片链接
+                'pro_price': 800//单价
+            },
+        ],
+        checked : false,
+        checkedNames: [],
+        curId: 0,
+        seen: true,
+   
+        sites: [
+     
+      
+
+    ]
+     
+
+    },
+    computed: {
+           
+        },
+    methods: {
+            
+           
+        },
+        mounted: function () {
+           
+        }
+
+
+
+
+})
+
+</script>
+</html>

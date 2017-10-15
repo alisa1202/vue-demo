@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue-resource/0.1.17/vue-resource.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="reset.css">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+</head>
+<style type="text/css">
+    #add-book{margin-bottom: 50px;}
+    .invite{width:96%;margin:0 auto;}
+
+</style>
+<body>
+<div id="tab">
+<nav ><a href="">Vue案例</a></nav>
+
+<div class="tab-tit">
+    <a href="javascript:;" @click="curId=0" :class="{'cur':curId===0}">邀请朋友 </a>
+    <a href="javascript:;" @click="curId=1" :class="{'cur':curId===1}">列表操作</a>
+    <a href="javascript:;" @click="curId=2" :class="{'cur':curId===2}">商场布局</a>
+    <a href="javascript:;" @click="curId=3" :class="{'cur':curId===3}">购物车案例</a>
+</div>
+<div class="tab-con">
+    <div v-show="curId===0">
+            <!-- <div class="login">
+                <img src="zu.jpg"  alt="" class="login-mid">
+                <div class="login-code clearfix">
+                    <input id="amount" class="first-login login-mid " style="IME-MODE: disabled; WIDTH:  60px; HEIGHT: 15px" onkeyup="this.value=this.value.replace(/\D/g,'')"  onafterpaste="    this.value=this.value.replace(/\D/g,'')" maxlength="11" size="14" name="amount" type= "text" placeholder="请输入您的手机号码" v-focus />
+                    <span class="code">验证码</span>
+                </div>
+                <input id="amount" class="first-login login-mid" style="IME-MODE: disabled; WIDTH:  60px; HEIGHT: 15px" onkeyup="this.value=this.value.replace(/\D/g,'')"  onafterpaste="    this.value=this.value.replace(/\D/g,'')" maxlength="6" size="14" name="amount" type= "text" placeholder="请输入验证码" />
+                <button class="login-mid login-btn">登录</button>
+            </div> -->
+        <h1>邀请朋友 </h1>
+        <div  class="invite">
+              <table class="table table-hover" v-cloak>
+                <thead>
+                  <tr>
+                    <th class="text-center" @click="sortBy('id')">序号</th>
+                    <th class="text-center" @click="sortBy('name')">name</th>                           <th class="text-center" @click="sortBy('Email')">Email</th>                             <th class="text-center" @click="sortBy('price')">salary</th>                             <th class="text-right" >操作</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="book in books">
+                    <td class="text-center">{{book.id}}</td>
+                    <td class="text-center">{{book.name}}</td>
+                    <td class="text-center">{{book.Email}}</td>
+                    <td class="text-center">{{book.price}}</td>
+                    <template v-if="book.id%2==0" >
+                        <td class="text-right">
+                            <button type="button" class="btn btn-success" @click="delBook(book)">删除</button>
+                        </td>
+                    </template>
+                    <template v-else>
+                         <td class="text-right">
+                            <button type="button" class="btn btn-danger" @click="delBook(book)">删除</button>     
+                         </td>
+                    </template>
+                  </tr>
+                  <tr>
+                    <td class="text-right" colspan="5">
+                      <h4>总价：{{sum}}</h4>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+              <div id="add-book">
+                    <legend>邀请朋友</legend>
+                    <div class="form-group">
+                  <label>name</label>
+                  <input type="text" class='form-control' v-model="book.name" placeholder="请输入邀请人名字">
+                    </div>
+                     <div class="form-group">
+                      <label>Email</label>
+                      <input type="text" class='form-control' v-model="book.Email" placeholder="请输入邮箱">
+                    </div>
+                 <div class="form-group">
+                  <label>salary</label>
+                  <input type="text" class='form-control' v-model="book.price" onkeyup="value=value.replace(/[^\d]/g,'')" placeholder="请输入数字">
+                </div>
+                 <button class="btn btn-primary btn-block" @click="addBook()">添加</button>
+              </div>
+            </div>
+    </div>
+
+
+    <div v-show="curId===1">
+        <div class="sencondList">
+            <div class="list">
+                <h3>添加购物清单</h3>
+                <input type="text" class="inputList" placeholder="输入所需购买商品，按回车确认" @keyup.13='addList' v-model="addText" />
+                <p>共有{{prolist.length}}个目标，{{noend==0?"全部完成了":'已完成'+(prolist.length-noend)+'，还有'+noend+'条未完成'}}</p>
+                <p>
+                     <input type="radio" name="chooseType" checked="true" @click='chooseList(1)'/><label>所有目标</label>
+                    <input type="radio" name="chooseType" @click='chooseList(2)'/><label>已完成目标</label>
+                    <input type="radio" name="chooseType" @click='chooseList(3)'/><label>未完成目标</label>
+                </p>
+            </div>
+        
+        <ul>
+            <li class="li1" v-for="(list,index) in newList" :class="{'eidting':curIndex===index}">
+            <div>
+                <span class="status-span" @click="changeType(index)" :class="{'status-end':list.status}"></span>
+                <span @dblclick="curIndex=index">{{list.name}}</span>
+                <span class="close" @click='delectList(list)'>X</span>
+            </div>
+            <input type="text" class="text2" v-model='list.name' @keyup.esc='cancelEdit(list)' @blur='edited' @focus='editBefore(list.name)' @keyup.enter='edited' v-focus/>
+            </li>
+        </ul>
+        </div>
+    </div>
+
+
+    <div v-show="curId===2">
+       
+       <div class="thirdShop">
+           <div class="bar">
+           <p>商品列表</p>
+                <a class="grid-icon" v-bind:class="{ 'active': layout == 'grid'}" v-on:click="layout = 'grid'"></a>
+                <a class="list-icon" v-bind:class="{ 'active': layout == 'list'}" v-on:click="layout = 'list'"></a>
+           </div>
+           <ul v-if="layout == 'grid'" class="grid clearfix">
+                 <li v-for="a in articles">
+                    <a v-bind:href="a.url" target="_blank"><img v-bind:src="a.image.large" /></a>
+                </li>
+            </ul>
+            <ul v-if="layout == 'list'" class="list">
+                <li v-for="a in articles">
+                    <a v-bind:href="a.url" target="_blank"><img v-bind:src="a.image.small" /></a>
+                    <p>{{a.title}}</p>
+                </li>
+            </ul>
+       </div>
+ 
+    </div>
+    <div v-show="curId===3">
+           
+            
+        <div class="page-shopping-cart">
+            <h2>购物车</h2>
+            <div class="cart-product-title clearfix">
+                <div class="td-check fl"><span class="check-span fl check-all" :class="{'check-true':isSelectAll}" @click="selectProduct(isSelectAll)"></span>全选</div>
+                    <div class="td-product fl">商品</div>
+                    <div class="td-num fl">数量</div>
+                    <div class="td-price fl">单价(元)</div>
+                    <div class="td-total fl">金额(元)</div>
+                    <div class="td-do fl">操作</div>
+            </div>
+            <div class="cart-product clearfix">
+                <table>
+                    <tbody>
+                        <tr v-for="(item,index) in productList">
+                            <td><span class="check-span" @click="item.select=!item.select" :class="{'check-true':item.select}"></span></td>
+                            <td>
+                                <img :src="item.pro_img" alt="" width="20" height="20">
+                                <div class="product-info">
+                                    <h6>{{item.pro_name}}</h6>
+                                    <p>{{item.pro_color}}&nbsp;&nbsp;{{item.pro_size}}</p>
+                                </div>
+                                <div class="clearfix"></div>                            
+                            </td>
+                            <td  class="td-num">
+                                <div class="product-num">
+                                    <a href="javascript:;" class="num-reduce num-do fl" @click="item.pro_num>0?item.pro_num--:''"><span></span></a>
+                                     <input type="text" class="num-input" v-model="item.pro_num">
+                                    <a href="javascript:;" class="num-add num-do fr" @click="item.pro_num++"><span></span></a>
+                                </div>
+
+                            </td>
+                            <td class="td-price">
+                                 <p class="red-text">￥<span class="price-text">{{item.pro_price.toFixed(2)}}</span></p>
+                            </td>
+                            <td  class="td-total">
+                                 <p class="red-text">￥<span class="total-text">{{item.pro_price*item.pro_num}}</span>.00</p>
+                            </td>
+                            <td class="td-do"><a href="javascript:;" class="product-delect" @click="deleteOneProduct(index)">删除</a></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+
+            </div>
+            
+            <div class="cart-product-info">
+                <a class="delect-product" href="javascript:;" @click="deleteProduct"><span></span>      删除所选商品</a>
+                <a class="keep-shopping" href="#"><span></span>继续购物</a>
+                <a class="btn-buy fr" href="javascript:;">去结算</a>
+                <p class="fr product-total">￥<span>{{getTotal.totalPrice}}</span></p>
+                <p class="fr check-num"><span>{{getTotal.totalNum}}</span>件商品总计（不含运费）：</p>
+            </div>
+   
+        </div>
+    </div>
+</div>
+</div>
+</body>
+<script src="vue.min.js"></script>
+
+<script>
+
+// 自定义组件 focus
+Vue.directive('focus', {
+  inserted: function (el) {
+    el.focus()
+  }
+})
+
+new Vue({
+    el: '#tab',
+    data: {
+        sortparam:'',
+        book:{
+      id:0,
+      name:'',
+      Email:'',
+      price:''
+    },
+        books:[
+            {id: 1,
+            name: '张三',
+            Email: 'zhang@qq.com',
+            price: 3200
+            },{
+                id: 2,
+                name: '李四',
+                Email: 'li@qq.com',
+                price: 3000
+            },{
+                id: '3',
+                name: '赵乾',
+                Email: 'zhao@qq.com',
+                price: 2400
+            }, {
+                id: 4,
+                name: '吴所谓',
+                Email: 'wei@qq.com',
+                price: 6000
+            }
+
+            ],
+
+        // sencond
+        addText:'',
+        prolist:[
+            {name:"HTML5",status:false},
+            {name:"CSS3",status:false},
+            {name:"vue",status:false},
+            {name:"react",status:false}
+        ],
+        newList:[],
+        curIndex:'',
+        beforeEditText:"",
+        curType:0,
+           
+        // sencond
+       
+
+        // third
+        layout: 'grid',
+        articles:[
+            {
+            "title": "美滋元猫粮美味三文鱼味幼猫猫粮2.5kg幼猫粮5斤大包装23省包邮",
+            "url": "http://tutorialzine.com/2016/03/what-you-need-to-know-about-css-variables/",
+            "image": {
+                "large": "img/large1.gif",
+                "small": "img/small1.png"
+            }
+            },
+            {
+            "title": "猫砂盆大号半封闭式猫厕所 膨润土猫沙盆猫屎盆猫咪用品送猫砂铲",
+            "url": "http://tutorialzine.com/2016/02/freebie-4-great-looking-pricing-tables/",
+            "image": {
+                "large": "img/large2.gif",
+                "small": "img/small1.png"
+            }
+            },
+            {
+            "title": "波奇网怡亲膨润土猫砂柠檬香型结团猫砂4kg聚团除臭猫砂24省包邮",
+            "url": "http://tutorialzine.com/2016/02/20-interesting-javascript-and-css-libraries-for-february-2016/",
+            "image": {
+                "large": "img/large3.gif",
+                "small": "img/small1.png"
+            }
+            },
+            {
+            "title": "买1送1猫粮成猫粮幼猫粮优趣猫粮成猫猫粮1.5kg赠后共6斤26省包邮",
+            "url": "http://tutorialzine.com/2016/02/quick-tip-easiest-way-to-make-responsive-headers/",
+            "image": {
+                "large": "img/large4.gif",
+                "small":"img/small1.png"
+            }
+            },
+            {
+            "title": "皇家猫粮幼猫奶糕BK34幼猫粮400gx2包1-4月龄离乳期新生小猫奶猫",
+            "url": "http://tutorialzine.com/2016/01/learn-sql-in-20-minutes/",
+            "image": {
+                "large": "img/large5.gif",
+                "small": "img/small1.png"
+            }
+            },
+            {
+            "title": "猫砂盆全封闭式特大号猫厕所松木双层猫沙盆猫屎盆子猫咪用品包邮",
+            "url": "http://tutorialzine.com/2015/12/creating-your-first-desktop-app-with-html-js-and-electron/",
+            "image": {
+                "large":"img/large6.gif",
+                "small": "img/small1.png"
+            }
+            }
+
+
+
+
+        ],
+        // third end
+        productList: [
+            {
+                'pro_name': '秋季时尚套装2017新款',
+                'pro_color': '白色',//品牌名称
+                'pro_size': 's',//品牌名称
+                'pro_num': 3,//数量
+                'pro_img': '../../images/ucenter/testimg.jpg',//图片链接
+                'pro_price': 800//单价
+            },
+            {
+                'pro_name': '秋季时尚套装2017新款',
+                'pro_color': '白色',//品牌名称
+                'pro_size': 's',//品牌名称
+                'pro_num': 3,//数量
+                'pro_img': '../../images/ucenter/testimg.jpg',//图片链接
+                'pro_price': 800//单价
+            },
+            {
+                'pro_name': '秋季时尚套装2017新款',
+                'pro_color': '白色',//品牌名称
+                'pro_size': 's',//品牌名称
+                'pro_num': 3,//数量
+                'pro_img': '../../images/ucenter/testimg.jpg',//图片链接
+                'pro_price': 800//单价
+            },
+            {
+                'pro_name': '秋季时尚套装2017新款',
+                'pro_color': '白色',//品牌名称
+                'pro_size': 's',//品牌名称
+                'pro_num': 3,//数量
+                'pro_img': '../../images/ucenter/testimg.jpg',//图片链接
+                'pro_price': 800//单价
+            },
+            {
+                'pro_name': '秋季时尚套装2017新款',
+                'pro_color': '白色',//品牌名称
+                'pro_size': 's',//品牌名称
+                'pro_num': 3,//数量
+                'pro_img': '../../images/ucenter/testimg.jpg',//图片链接
+                'pro_price': 800//单价
+            },
+            {
+                'pro_name': '秋季时尚套装2017新款',
+                'pro_color': '白色',//品牌名称
+                'pro_size': 's',//品牌名称
+                'pro_num': 3,//数量
+                'pro_img': '../../images/ucenter/testimg.jpg',//图片链接
+                'pro_price': 800//单价
+            },
+            {
+                'pro_name': '秋季时尚套装2017新款',
+                'pro_color': '白色',//品牌名称
+                'pro_size': 's',//品牌名称
+                'pro_num': 3,//数量
+                'pro_img': '../../images/ucenter/testimg.jpg',//图片链接
+                'pro_price': 800//单价
+            },
+            {
+                'pro_name': '秋季时尚套装2017新款',
+                'pro_color': '白色',//品牌名称
+                'pro_size': 's',//品牌名称
+                'pro_num': 3,//数量
+                'pro_img': '../../images/ucenter/testimg.jpg',//图片链接
+                'pro_price': 800//单价
+            },
+        ],
+        checked : false,
+        checkedNames: [],
+        curId: 0,
+        seen: true,
+    object:{
+      name: '菜鸟教程',
+      url: 'http://www.runoob.com',
+      slogan: '学的不仅是技术，更是梦想！'
+    },
+        sites: [
+      { name: 'Runoob' },
+      { name: 'Google' },
+      { name: 'Taobao' }
+      
+
+    ]
+     
+
+    },
+    computed: {
+            isSelectAll:function(){
+                return this.productList.every(function (val) { return val.select});
+            },
+            getTotal:function(){
+                var _proList=this.productList.filter(function (val) { return val.select}),totalPrice=0;
+                for(var i=0,len=_proList.length;i<len;i++){
+                    //总价累加
+                    totalPrice+=_proList[i].pro_num*_proList[i].pro_price;
+                }
+                return {totalNum:_proList.length,totalPrice:totalPrice}
+            },
+            noend :function(){
+                return this.prolist.filter(function(item){
+                    return !item.status
+                }).length;
+            },
+            sum:function(){
+              var result = 0;
+              for (var i=0;i<this.books.length;i++){
+                result += Number(this.books[i].price)
+              };
+              return result;
+            }
+
+        },
+    methods: {
+             addBook:function(){
+      this.book.id = this.books.length +1;
+      this.books.push(this.book);
+      this.book = '';
+    },
+    delBook:function(book){
+      this.books.$remove(book);
+    },
+    sortBy:function(sortparam){
+      this.sortparam = sortparam
+    },
+            //全选与取消全选
+            selectProduct:function(_isSelect){
+                //遍历productList，全部取反
+                for (var i = 0, len = this.productList.length; i < len; i++) {
+                    this.productList[i].select = !_isSelect;
+                }
+            },
+            //删除已经选中(select=true)的产品
+            deleteProduct:function () {
+                this.productList=this.productList.filter(function (item) {return !item.select})
+            },
+            //删除单条产品
+            deleteOneProduct:function (index) {
+                //根据索引删除productList的记录
+                this.productList.splice(index,1);
+            },
+
+            // 2
+            addList(){
+                //添加进来默认status=false,就是未完成状态
+                this.prolist.push({
+                    name:this.addText,
+                    status:false
+                });
+                //添加后，清空addText
+                this.addText="";
+            },
+             chooseList(type){
+                //type=1时，选择所有目标
+                //type=2时，选择所有已完成目标
+                //type=3时，选择所有未完成目标
+                this.curType=type;
+                switch(type){
+                    case 1:this.newList=this.prolist;break;
+                    case 2:this.newList=this.prolist.filter(function(item){return item.status});break;
+                    case 3:this.newList=this.prolist.filter(function(item){return !item.status});break;
+                }
+            },
+            /*改变单条数据的完成状态*/
+            changeType(index){
+                this.newList[index].status=!this.newList[index].status;
+                //更新数据
+                this.chooseList(this.curType);
+            },
+            delectList(list){
+                var index=this.prolist.indexOf(list);
+                //根据索引，删除数组某一项
+                this.prolist.splice(index,1);
+                //更新newList  newList可能经过this.prolist.filter()赋值，这样的话，删除了prolist不会影响到newList  那么就要手动更新newList
+                //this.newList=this.prolist;
+                this.chooseList(this.curType);
+            },
+            //修改前
+            editBefore(name){
+                //先记录当前项（比如这一项，{name:"HTML5",status:false}）
+                //beforeEditText="HTML5"
+                this.beforeEditText=name;
+            },
+            //修改完成后
+            edited(){
+                //修改完了，设置curIndex=""，这样输入框就隐藏，其它元素就会显示。因为在li元素 写了：:class="{'eidting':curIndex===index}"  当curIndex不等于index时，eidting类名就清除了！
+                //输入框利用v-model绑定了当前项（比如这一项，{name:"HTML5",status:false}）的name,当在输入框编辑的时候，比如改成‘HTML’,实际上当前项的name已经变成了‘HTML’，所以，这一步只是清除eidting类名，隐藏输入框而已
+                //还有一个要注意的就是虽然li遍历的是newList，比如改了newList的这一项（{name:"HTML5",status:false}），比如改成这样（{name:"HTML",status:true}）。实际上prolist的这一项（{name:"HTML5",status:false}），也会被改成（{name:"HTML",status:true}）。因为这里是一个对象，而且公用一个堆栈！修改其中一个，另一个会被影响到
+                this.curIndex="";
+            },
+            //取消修改
+            cancelEdit(val){
+                //上面说了输入框利用v-model绑定了当前项（比如这一项，{name:"HTML5",status:false}）的name,当在输入框编辑的时候，比如改成‘HTML’,实际上当前项的name已经变成了‘HTML’，所以，这一步就是把之前保存的beforeEditText赋值给当前项的name属性，起到一个恢复原来值得作用！
+                val.name=this.beforeEditText;
+                this.curIndex="";
+            },
+        },
+        mounted: function () {
+            var _this=this;
+            this.productList.map(function (item) {
+                _this.$set(item, 'select', true);
+            }),
+            // 2
+            this.newList=this.prolist;
+        }
+
+
+
+
+})
+
+</script>
+</html>
